@@ -1,8 +1,8 @@
 # AudioStreamingPipeline
 This contains code for real-time audio processing pipeline that captures audio from your computer's microphone, processes it through several components, and generates a spoken response.
-# Audio Processing Pipeline
 
-A modular, production-ready audio streaming and processing pipeline for real-time speech recognition, natural language processing, and text-to-speech synthesis.
+
+This is a modular, production-ready audio streaming and processing pipeline for real-time speech recognition, natural language processing, and text-to-speech synthesis.
 
 ## Features
 
