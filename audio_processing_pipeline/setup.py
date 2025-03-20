@@ -1,0 +1,42 @@
+from setuptools import setup, find_packages
+
+setup(
+    name="audio_processing_pipeline",
+    version="0.1.0",
+    description="A modular audio processing pipeline for speech recognition and processing",
+    author="Monideepa Roy",
+    packages=find_packages(),
+    install_requires=[
+        "aiofiles>=23.2.1",
+        "asyncio>=3.4.3",
+        "fastapi>=0.104.1",
+        "gtts>=2.3.2",
+        "librosa>=0.10.1",
+        "loguru>=0.7.2",
+        "matplotlib>=3.8.0",
+        "nest_asyncio>=1.5.8",
+        "numpy>=1.24.3",
+        "pydantic>=2.4.2",
+        "PyAudio>=0.2.13",
+        "python-multipart>=0.0.6",
+        "sounddevice>=0.4.6",
+        "soundfile>=0.12.1",
+        "spacy>=3.7.2",
+        "torch>=2.1.0",
+        "torchaudio>=2.1.0",
+        "transformers>=4.34.0",
+        "TTS>=0.21.1",
+        "uvicorn>=0.23.2"
+    ],
+    python_requires=">=3.8",
+    classifiers=[
+        "Development Status :: 3 - Alpha",
+        "Intended Audience :: Developers",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+    ],
+)

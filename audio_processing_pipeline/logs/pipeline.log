@@ -1,0 +1,211 @@
+2025-03-19 21:46:19.680 | INFO     | __main__:process_microphone:402 - Detected speech: The weather is nice today
+2025-03-19 21:46:19.680 | INFO     | __main__:process_microphone:403 - Response: {'original_text': 'The weather is nice today', 'error': "'TextProcessing' object has no attribute '_analyze_sentiment'", 'response': "I didn't catch that. Could you please repeat?"}
+2025-03-19 21:46:19.681 | INFO     | __main__:main:438 - === Result ===
+2025-03-19 21:46:19.682 | INFO     | __main__:main:439 - Transcription: The weather is nice today
+2025-03-19 21:46:19.682 | INFO     | __main__:main:440 - Response: {'original_text': 'The weather is nice today', 'error': "'TextProcessing' object has no attribute '_analyze_sentiment'", 'response': "I didn't catch that. Could you please repeat?"}
+2025-03-19 21:46:19.682 | INFO     | __main__:main:441 - Speech file: None
+2025-03-19 21:46:19.682 | INFO     | src.core.pipeline:shutdown:52 - Shutting down pipeline: SimplePipeline
+2025-03-19 21:46:19.683 | INFO     | src.components.audio_capture:shutdown:54 - Shutting down AudioCapture component...
+2025-03-19 21:46:19.796 | INFO     | __main__:shutdown:151 - Shutting down TextToSpeech
+2025-03-19 21:46:20.016 | INFO     | src.components.audio_capture:audio_generator:128 - Audio capture stopped
+2025-03-19 21:54:05.572 | INFO     | __main__:main:494 - === Simple Audio Processing Pipeline ===
+2025-03-19 21:54:05.575 | INFO     | src.core.pipeline:initialize:46 - Initializing pipeline: SimplePipeline
+2025-03-19 21:54:05.576 | INFO     | src.components.audio_capture:initialize:41 - Initializing AudioCapture component...
+2025-03-19 21:54:05.576 | INFO     | src.components.speech_to_text:initialize:43 - Initializing SpeechToText with model facebook/wav2vec2-base-960h
+2025-03-19 21:54:05.576 | INFO     | __main__:initialize:72 - Initializing TextProcessing
+2025-03-19 21:54:05.576 | INFO     | __main__:initialize:118 - Initializing ResponseGenerator
+2025-03-19 21:54:05.577 | INFO     | __main__:initialize:176 - Initializing TextToSpeech
+2025-03-19 21:54:05.577 | INFO     | __main__:main:509 - Processing microphone input...
+2025-03-19 21:54:05.577 | INFO     | __main__:process_microphone:456 - Listening for 10 seconds...
+2025-03-19 21:54:05.578 | INFO     | src.components.audio_capture:audio_generator:74 - Using mock audio generator
+2025-03-19 21:54:15.592 | INFO     | __main__:main:518 - No speech detected
+2025-03-19 21:54:15.593 | INFO     | src.core.pipeline:shutdown:52 - Shutting down pipeline: SimplePipeline
+2025-03-19 21:54:15.593 | INFO     | src.components.audio_capture:shutdown:54 - Shutting down AudioCapture component...
+2025-03-19 21:54:15.593 | INFO     | __main__:shutdown:97 - Shutting down TextProcessing
+2025-03-19 21:54:15.593 | INFO     | __main__:shutdown:141 - Shutting down ResponseGenerator
+2025-03-19 21:54:15.594 | INFO     | __main__:shutdown:222 - Shutting down TextToSpeech
+2025-03-19 21:54:44.088 | INFO     | __main__:main:494 - === Simple Audio Processing Pipeline ===
+2025-03-19 21:54:44.089 | INFO     | src.core.pipeline:initialize:46 - Initializing pipeline: SimplePipeline
+2025-03-19 21:54:44.089 | INFO     | src.components.audio_capture:initialize:41 - Initializing AudioCapture component...
+2025-03-19 21:54:44.089 | INFO     | src.components.speech_to_text:initialize:43 - Initializing SpeechToText with model facebook/wav2vec2-base-960h
+2025-03-19 21:54:44.090 | INFO     | __main__:initialize:72 - Initializing TextProcessing
+2025-03-19 21:54:44.090 | INFO     | __main__:initialize:118 - Initializing ResponseGenerator
+2025-03-19 21:54:44.090 | INFO     | __main__:initialize:176 - Initializing TextToSpeech
+2025-03-19 21:54:44.090 | INFO     | __main__:main:509 - Processing microphone input...
+2025-03-19 21:54:44.091 | INFO     | __main__:process_microphone:456 - Listening for 10 seconds...
+2025-03-19 21:54:44.091 | INFO     | src.components.audio_capture:audio_generator:74 - Using mock audio generator
+2025-03-19 21:54:54.103 | INFO     | __main__:main:518 - No speech detected
+2025-03-19 21:54:54.103 | INFO     | src.core.pipeline:shutdown:52 - Shutting down pipeline: SimplePipeline
+2025-03-19 21:54:54.104 | INFO     | src.components.audio_capture:shutdown:54 - Shutting down AudioCapture component...
+2025-03-19 21:54:54.104 | INFO     | __main__:shutdown:97 - Shutting down TextProcessing
+2025-03-19 21:54:54.105 | INFO     | __main__:shutdown:141 - Shutting down ResponseGenerator
+2025-03-19 21:54:54.105 | INFO     | __main__:shutdown:222 - Shutting down TextToSpeech
+2025-03-19 22:02:10.907 | INFO     | __main__:main:590 - === Simple Audio Processing Pipeline ===
+2025-03-19 22:02:10.912 | INFO     | src.core.pipeline:initialize:46 - Initializing pipeline: SimplePipeline
+2025-03-19 22:02:10.912 | INFO     | src.components.audio_capture:initialize:41 - Initializing AudioCapture component...
+2025-03-19 22:02:10.912 | INFO     | __main__:initialize:77 - Initializing VAD
+2025-03-19 22:02:10.912 | INFO     | src.components.speech_to_text:initialize:43 - Initializing SpeechToText with model facebook/wav2vec2-base-960h
+2025-03-19 22:02:10.913 | INFO     | __main__:initialize:99 - Initializing TextProcessing
+2025-03-19 22:02:10.913 | INFO     | __main__:initialize:145 - Initializing ResponseGenerator
+2025-03-19 22:02:10.914 | INFO     | __main__:initialize:203 - Initializing TextToSpeech
+2025-03-19 22:02:10.914 | INFO     | __main__:main:605 - Processing microphone input...
+2025-03-19 22:02:20.927 | INFO     | __main__:process_microphone:491 - Listening for 10 seconds...
+2025-03-19 22:02:20.928 | INFO     | src.components.audio_capture:audio_generator:81 - Starting audio capture...
+2025-03-19 22:02:21.181 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:02:21.787 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742401941.mp3
+2025-03-19 22:02:21.787 | INFO     | __main__:process_microphone:512 - Detected speech: Hello world
+2025-03-19 22:02:21.788 | INFO     | __main__:process_microphone:513 - Response: I appreciate your input. How can I assist you further?
+2025-03-19 22:02:21.789 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:02:22.506 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742401941.mp3
+2025-03-19 22:02:22.507 | INFO     | __main__:process_microphone:512 - Detected speech: This is a test
+2025-03-19 22:02:22.507 | INFO     | __main__:process_microphone:513 - Response: Thanks for sharing. What else would you like to discuss?
+2025-03-19 22:02:22.508 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:02:23.099 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742401942.mp3
+2025-03-19 22:02:23.100 | INFO     | __main__:process_microphone:512 - Detected speech: Audio processing pipeline
+2025-03-19 22:02:23.100 | INFO     | __main__:process_microphone:513 - Response: I see. Is there anything specific you'd like to know?
+2025-03-19 22:02:23.101 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:02:23.766 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742401943.mp3
+2025-03-19 22:02:23.766 | INFO     | __main__:process_microphone:512 - Detected speech: How can I help you today?
+2025-03-19 22:02:23.767 | INFO     | __main__:process_microphone:513 - Response: That's interesting. How can I help you with that?
+2025-03-19 22:02:23.768 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:02:24.388 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742401943.mp3
+2025-03-19 22:02:24.388 | INFO     | __main__:process_microphone:512 - Detected speech: The weather is nice today
+2025-03-19 22:02:24.389 | INFO     | __main__:process_microphone:513 - Response: I understand. Please tell me more.
+2025-03-19 22:02:24.390 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:02:25.041 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742401944.mp3
+2025-03-19 22:02:25.041 | INFO     | __main__:process_microphone:512 - Detected speech: Hello world
+2025-03-19 22:02:25.042 | INFO     | __main__:process_microphone:513 - Response: I appreciate your input. How can I assist you further?
+2025-03-19 22:02:25.042 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:02:25.652 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742401945.mp3
+2025-03-19 22:02:25.652 | INFO     | __main__:process_microphone:512 - Detected speech: This is a test
+2025-03-19 22:02:25.653 | INFO     | __main__:process_microphone:513 - Response: I understand. Please tell me more.
+2025-03-19 22:02:25.654 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:02:26.280 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742401945.mp3
+2025-03-19 22:02:26.280 | INFO     | __main__:process_microphone:512 - Detected speech: Audio processing pipeline
+2025-03-19 22:02:26.281 | INFO     | __main__:process_microphone:513 - Response: That's interesting. How can I help you with that?
+2025-03-19 22:02:26.281 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:02:26.930 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742401946.mp3
+2025-03-19 22:02:26.930 | INFO     | __main__:process_microphone:512 - Detected speech: How can I help you today?
+2025-03-19 22:02:26.931 | INFO     | __main__:process_microphone:513 - Response: Thanks for sharing. What else would you like to discuss?
+2025-03-19 22:02:26.931 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:02:27.416 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742401947.mp3
+2025-03-19 22:02:27.416 | INFO     | __main__:process_microphone:512 - Detected speech: The weather is nice today
+2025-03-19 22:02:27.417 | INFO     | __main__:process_microphone:513 - Response: I understand. Please tell me more.
+2025-03-19 22:02:27.418 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:02:28.023 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742401947.mp3
+2025-03-19 22:02:28.023 | INFO     | __main__:process_microphone:512 - Detected speech: Hello world
+2025-03-19 22:02:28.024 | INFO     | __main__:process_microphone:513 - Response: I appreciate your input. How can I assist you further?
+2025-03-19 22:02:28.025 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:02:28.540 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742401948.mp3
+2025-03-19 22:02:28.541 | INFO     | __main__:process_microphone:512 - Detected speech: This is a test
+2025-03-19 22:02:28.541 | INFO     | __main__:process_microphone:513 - Response: I appreciate your input. How can I assist you further?
+2025-03-19 22:02:28.542 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:02:29.263 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742401948.mp3
+2025-03-19 22:02:29.263 | INFO     | __main__:process_microphone:512 - Detected speech: Audio processing pipeline
+2025-03-19 22:02:29.263 | INFO     | __main__:process_microphone:513 - Response: Thanks for sharing. What else would you like to discuss?
+2025-03-19 22:02:29.264 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:02:29.839 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742401949.mp3
+2025-03-19 22:02:29.840 | INFO     | __main__:process_microphone:512 - Detected speech: How can I help you today?
+2025-03-19 22:02:29.840 | INFO     | __main__:process_microphone:513 - Response: I understand. Please tell me more.
+2025-03-19 22:02:29.841 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:02:30.356 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742401950.mp3
+2025-03-19 22:02:30.356 | INFO     | __main__:process_microphone:512 - Detected speech: The weather is nice today
+2025-03-19 22:02:30.357 | INFO     | __main__:process_microphone:513 - Response: Thanks for sharing. What else would you like to discuss?
+2025-03-19 22:02:30.358 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:02:31.087 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742401950.mp3
+2025-03-19 22:02:31.088 | INFO     | __main__:process_microphone:512 - Detected speech: Hello world
+2025-03-19 22:02:31.088 | INFO     | __main__:process_microphone:513 - Response: Thanks for sharing. What else would you like to discuss?
+2025-03-19 22:02:31.710 | INFO     | __main__:main:609 - === Result ===
+2025-03-19 22:02:31.710 | INFO     | __main__:main:610 - Transcription: Hello world
+2025-03-19 22:02:31.710 | INFO     | __main__:main:611 - Response: Thanks for sharing. What else would you like to discuss?
+2025-03-19 22:02:31.710 | INFO     | __main__:main:612 - Speech file: output/tts/response_1742401950.mp3
+2025-03-19 22:02:31.820 | INFO     | src.components.audio_capture:audio_generator:128 - Audio capture stopped
+2025-03-19 22:02:35.760 | INFO     | src.core.pipeline:shutdown:52 - Shutting down pipeline: SimplePipeline
+2025-03-19 22:02:35.761 | INFO     | src.components.audio_capture:shutdown:54 - Shutting down AudioCapture component...
+2025-03-19 22:02:35.761 | INFO     | __main__:shutdown:87 - Shutting down VAD
+2025-03-19 22:02:35.762 | INFO     | __main__:shutdown:124 - Shutting down TextProcessing
+2025-03-19 22:02:35.762 | INFO     | __main__:shutdown:168 - Shutting down ResponseGenerator
+2025-03-19 22:02:35.763 | INFO     | __main__:shutdown:249 - Shutting down TextToSpeech
+2025-03-19 22:25:44.820 | INFO     | __main__:main:590 - === Simple Audio Processing Pipeline ===
+2025-03-19 22:25:44.825 | INFO     | src.core.pipeline:initialize:46 - Initializing pipeline: SimplePipeline
+2025-03-19 22:25:44.826 | INFO     | src.components.audio_capture:initialize:41 - Initializing AudioCapture component...
+2025-03-19 22:25:44.826 | INFO     | __main__:initialize:77 - Initializing VAD
+2025-03-19 22:25:44.826 | INFO     | src.components.speech_to_text:initialize:43 - Initializing SpeechToText with model facebook/wav2vec2-base-960h
+2025-03-19 22:25:44.827 | INFO     | __main__:initialize:99 - Initializing TextProcessing
+2025-03-19 22:25:44.828 | INFO     | __main__:initialize:145 - Initializing ResponseGenerator
+2025-03-19 22:25:44.828 | INFO     | __main__:initialize:203 - Initializing TextToSpeech
+2025-03-19 22:25:44.828 | INFO     | __main__:main:605 - Processing microphone input...
+2025-03-19 22:25:46.308 | INFO     | __main__:process_microphone:491 - Listening for 10 seconds...
+2025-03-19 22:25:46.309 | INFO     | src.components.audio_capture:audio_generator:81 - Starting audio capture...
+2025-03-19 22:25:46.588 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:25:47.570 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742403346.mp3
+2025-03-19 22:25:47.571 | INFO     | __main__:process_microphone:512 - Detected speech: Hello world
+2025-03-19 22:25:47.571 | INFO     | __main__:process_microphone:513 - Response: I see. Is there anything specific you'd like to know?
+2025-03-19 22:25:47.572 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:25:48.215 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742403347.mp3
+2025-03-19 22:25:48.216 | INFO     | __main__:process_microphone:512 - Detected speech: This is a test
+2025-03-19 22:25:48.216 | INFO     | __main__:process_microphone:513 - Response: I understand. Please tell me more.
+2025-03-19 22:25:48.218 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:25:48.959 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742403348.mp3
+2025-03-19 22:25:48.959 | INFO     | __main__:process_microphone:512 - Detected speech: Audio processing pipeline
+2025-03-19 22:25:48.960 | INFO     | __main__:process_microphone:513 - Response: That's interesting. How can I help you with that?
+2025-03-19 22:25:48.961 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:25:49.538 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742403349.mp3
+2025-03-19 22:25:49.539 | INFO     | __main__:process_microphone:512 - Detected speech: How can I help you today?
+2025-03-19 22:25:49.539 | INFO     | __main__:process_microphone:513 - Response: Thanks for sharing. What else would you like to discuss?
+2025-03-19 22:25:49.540 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:25:50.222 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742403349.mp3
+2025-03-19 22:25:50.222 | INFO     | __main__:process_microphone:512 - Detected speech: The weather is nice today
+2025-03-19 22:25:50.223 | INFO     | __main__:process_microphone:513 - Response: I appreciate your input. How can I assist you further?
+2025-03-19 22:25:50.223 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:25:51.134 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742403350.mp3
+2025-03-19 22:25:51.134 | INFO     | __main__:process_microphone:512 - Detected speech: Hello world
+2025-03-19 22:25:51.135 | INFO     | __main__:process_microphone:513 - Response: Thanks for sharing. What else would you like to discuss?
+2025-03-19 22:25:51.135 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:25:51.784 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742403351.mp3
+2025-03-19 22:25:51.784 | INFO     | __main__:process_microphone:512 - Detected speech: This is a test
+2025-03-19 22:25:51.784 | INFO     | __main__:process_microphone:513 - Response: I see. Is there anything specific you'd like to know?
+2025-03-19 22:25:51.785 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:25:52.306 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742403351.mp3
+2025-03-19 22:25:52.306 | INFO     | __main__:process_microphone:512 - Detected speech: Audio processing pipeline
+2025-03-19 22:25:52.306 | INFO     | __main__:process_microphone:513 - Response: I see. Is there anything specific you'd like to know?
+2025-03-19 22:25:52.307 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:25:52.953 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742403352.mp3
+2025-03-19 22:25:52.954 | INFO     | __main__:process_microphone:512 - Detected speech: How can I help you today?
+2025-03-19 22:25:52.954 | INFO     | __main__:process_microphone:513 - Response: I appreciate your input. How can I assist you further?
+2025-03-19 22:25:52.955 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:25:53.591 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742403353.mp3
+2025-03-19 22:25:53.592 | INFO     | __main__:process_microphone:512 - Detected speech: The weather is nice today
+2025-03-19 22:25:53.592 | INFO     | __main__:process_microphone:513 - Response: That's interesting. How can I help you with that?
+2025-03-19 22:25:53.593 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:25:54.219 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742403353.mp3
+2025-03-19 22:25:54.219 | INFO     | __main__:process_microphone:512 - Detected speech: Hello world
+2025-03-19 22:25:54.219 | INFO     | __main__:process_microphone:513 - Response: I appreciate your input. How can I assist you further?
+2025-03-19 22:25:54.220 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:25:54.711 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742403354.mp3
+2025-03-19 22:25:54.712 | INFO     | __main__:process_microphone:512 - Detected speech: This is a test
+2025-03-19 22:25:54.712 | INFO     | __main__:process_microphone:513 - Response: I appreciate your input. How can I assist you further?
+2025-03-19 22:25:54.713 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:25:55.210 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742403354.mp3
+2025-03-19 22:25:55.210 | INFO     | __main__:process_microphone:512 - Detected speech: Audio processing pipeline
+2025-03-19 22:25:55.210 | INFO     | __main__:process_microphone:513 - Response: I appreciate your input. How can I assist you further?
+2025-03-19 22:25:55.211 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:25:55.793 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742403355.mp3
+2025-03-19 22:25:55.793 | INFO     | __main__:process_microphone:512 - Detected speech: How can I help you today?
+2025-03-19 22:25:55.794 | INFO     | __main__:process_microphone:513 - Response: I understand. Please tell me more.
+2025-03-19 22:25:55.794 | INFO     | __main__:process:82 - VAD: Speech detected (mock mode)
+2025-03-19 22:25:56.455 | INFO     | __main__:process:230 - Speech saved to output/tts/response_1742403355.mp3
+2025-03-19 22:25:56.455 | INFO     | __main__:process_microphone:512 - Detected speech: The weather is nice today
+2025-03-19 22:25:56.456 | INFO     | __main__:process_microphone:513 - Response: I see. Is there anything specific you'd like to know?
+2025-03-19 22:25:57.079 | INFO     | __main__:main:609 - === Result ===
+2025-03-19 22:25:57.080 | INFO     | __main__:main:610 - Transcription: The weather is nice today
+2025-03-19 22:25:57.081 | INFO     | __main__:main:611 - Response: I see. Is there anything specific you'd like to know?
+2025-03-19 22:25:57.081 | INFO     | __main__:main:612 - Speech file: output/tts/response_1742403355.mp3
+2025-03-19 22:25:57.206 | INFO     | src.components.audio_capture:audio_generator:128 - Audio capture stopped
+2025-03-19 22:26:01.244 | INFO     | src.core.pipeline:shutdown:52 - Shutting down pipeline: SimplePipeline
+2025-03-19 22:26:01.245 | INFO     | src.components.audio_capture:shutdown:54 - Shutting down AudioCapture component...
+2025-03-19 22:26:01.245 | INFO     | __main__:shutdown:87 - Shutting down VAD
+2025-03-19 22:26:01.246 | INFO     | __main__:shutdown:124 - Shutting down TextProcessing
+2025-03-19 22:26:01.246 | INFO     | __main__:shutdown:168 - Shutting down ResponseGenerator
+2025-03-19 22:26:01.247 | INFO     | __main__:shutdown:249 - Shutting down TextToSpeech
+2025-03-20 13:44:22.945 | INFO     | __main__:main:396 - === Simple Audio Processing Pipeline ===
