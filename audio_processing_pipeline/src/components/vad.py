@@ -1,134 +1,84 @@
-from typing import Tuple
-
 import numpy as np
+from typing import Dict, Any, Tuple
 
-from src.api.models import ComponentAPIRequest, ComponentAPIResponse
-from src.core.component import Component, ComponentConfig
-from src.utils.logger import logger
+# Try to import logger, fallback to standard logging
+try:
+    from loguru import logger
+except ImportError:
+    import logging
+    logger = logging.getLogger("vad")
 
+class VAD:
+    def __init__(self, config=None, performance_tracker=None):
+        self.name = "VAD"
+        self.performance_tracker = performance_tracker
+        self.energy_threshold = config.get("energy_threshold", 0.01) if config else 0.01
+        self.window_size = config.get("window_size", 4) if config else 4
+        self.advanced_mode = config.get("advanced_mode", True) if config else True
 
-class VADConfig(ComponentConfig):
-    """Configuration for Voice Activity Detection"""
-    energy_threshold: float = 0.01
-    window_size: int = 4
-    speech_threshold: float = 0.5
-    advanced_mode: bool = False  # Use more sophisticated VAD when True
+        logger.info(f"Initializing {self.name}")
 
-
-class VAD(Component):
-    """Voice Activity Detection component"""
-
-    def __init__(self, config: VADConfig):
-        super().__init__(config)
-        self.energy_threshold = config.energy_threshold
-        self.window_size = config.window_size
-        self.speech_threshold = config.speech_threshold
-        self.advanced_mode = config.advanced_mode
-        self.energy_history = []
-
-    async def process(self, data: bytes) -> Tuple[bool, bytes]:
-        """Detect voice activity in audio data
-
-        Returns:
-            Tuple of (is_speech, audio_data)
-        """
-        if not self.initialized:
-            raise RuntimeError("Component not initialized")
-
-        # Convert bytes to numpy array
-        audio_array = np.frombuffer(data, dtype=np.int16).astype(np.float32)
-
-        if self.advanced_mode:
-            # More sophisticated VAD using energy and zero-crossing rate
-            energy = np.mean(np.abs(audio_array)) / 32767.0
-
-            # Calculate zero-crossing rate
-            zero_crossings = np.sum(np.abs(np.diff(np.signbit(audio_array)))) / len(audio_array)
-
-            # Update energy history
-            self.energy_history.append(energy)
-            if len(self.energy_history) > self.window_size:
-                self.energy_history.pop(0)
-
-            # Calculate average energy over window
-            avg_energy = np.mean(self.energy_history)
-
-            # Combine energy and zero-crossing rate for decision
-            # High energy and moderate zero-crossing rate typically indicates speech
-            is_speech = (avg_energy > self.energy_threshold and
-                         0.01 < zero_crossings < 0.15)
-        else:
-            # Simple energy-based detection
-            energy = np.mean(np.abs(audio_array)) / 32767.0
-            is_speech = energy > self.energy_threshold
-
-        return is_speech, data
-
-    async def handle_api_request(self, request: ComponentAPIRequest) -> ComponentAPIResponse:
-        """Handle API requests specific to VAD"""
-        # Handle common operations first
-        if request.operation in ["status", "process"]:
-            return await super().handle_api_request(request)
-
-        # Handle component-specific operations
+    async def initialize(self):
+        # Try to import webrtcvad for better VAD
         try:
-            if request.operation == "update_config":
-                if not request.config:
-                    return ComponentAPIResponse(
-                        success=False,
-                        message="No configuration provided",
-                        component_type=self.__class__.__name__,
-                        operation=request.operation
-                    )
+            import webrtcvad
+            self.vad = webrtcvad.Vad(3)  # Aggressiveness level 3 (highest)
+            self.use_webrtc = True
+            logger.info("Using WebRTC VAD")
+        except ImportError:
+            self.use_webrtc = False
+            logger.info("WebRTC VAD not available, using energy-based VAD")
 
-                # Update configuration
-                if "energy_threshold" in request.config:
-                    self.energy_threshold = float(request.config["energy_threshold"])
-                if "window_size" in request.config:
-                    self.window_size = int(request.config["window_size"])
-                if "speech_threshold" in request.config:
-                    self.speech_threshold = float(request.config["speech_threshold"])
-                if "advanced_mode" in request.config:
-                    self.advanced_mode = bool(request.config["advanced_mode"])
+        logger.info(f"{self.name} initialized successfully")
+        return True
 
-                return ComponentAPIResponse(
-                    success=True,
-                    message="Configuration updated successfully",
-                    component_type=self.__class__.__name__,
-                    operation=request.operation,
-                    data={
-                        "energy_threshold": self.energy_threshold,
-                        "window_size": self.window_size,
-                        "speech_threshold": self.speech_threshold,
-                        "advanced_mode": self.advanced_mode
-                    }
-                )
-            elif request.operation == "get_config":
-                return ComponentAPIResponse(
-                    success=True,
-                    message="Configuration retrieved successfully",
-                    component_type=self.__class__.__name__,
-                    operation=request.operation,
-                    data={
-                        "energy_threshold": self.energy_threshold,
-                        "window_size": self.window_size,
-                        "speech_threshold": self.speech_threshold,
-                        "advanced_mode": self.advanced_mode
-                    }
-                )
+    async def process(self, audio_data) -> Tuple[bool, np.ndarray]:
+        """Detect voice activity in audio data"""
+        if self.performance_tracker:
+            self.performance_tracker.start_component("VAD")
+
+        try:
+            # Check if audio data is empty
+            if len(audio_data) == 0:
+                has_speech = False
             else:
-                return ComponentAPIResponse(
-                    success=False,
-                    message=f"Unknown operation: {request.operation}",
-                    component_type=self.__class__.__name__,
-                    operation=request.operation
-                )
+                if self.use_webrtc:
+                    # Convert float audio to 16-bit PCM
+                    audio_int16 = (audio_data * 32768).astype(np.int16)
+
+                    # Process in 30ms frames (480 samples at 16kHz)
+                    frame_size = 480
+                    num_frames = len(audio_int16) // frame_size
+
+                    # Check each frame for speech
+                    speech_frames = 0
+                    for i in range(num_frames):
+                        frame = audio_int16[i * frame_size:(i + 1) * frame_size]
+                        frame_bytes = frame.tobytes()
+                        if self.vad.is_speech(frame_bytes, 16000):
+                            speech_frames += 1
+
+                    # If more than 30% of frames contain speech, consider it speech
+                    has_speech = speech_frames / max(1, num_frames) > 0.3
+                else:
+                    # Simple energy-based VAD
+                    energy = np.mean(np.abs(audio_data))
+                    has_speech = energy > self.energy_threshold
+
+            if self.performance_tracker:
+                elapsed = self.performance_tracker.end_component("VAD")
+                logger.info(f"VAD processing time: {elapsed:.3f}s")
+
+            return has_speech, audio_data
+
         except Exception as e:
-            logger.error(f"Error in API request: {str(e)}")
-            return ComponentAPIResponse(
-                success=False,
-                message="Error processing API request",
-                component_type=self.__class__.__name__,
-                operation=request.operation,
-                error=str(e)
-            )
+            logger.error(f"Error in VAD: {str(e)}")
+
+            if self.performance_tracker:
+                self.performance_tracker.end_component("VAD")
+
+            return False, audio_data
+
+    async def shutdown(self):
+        logger.info(f"{self.name} shutdown successfully")
+        return True
