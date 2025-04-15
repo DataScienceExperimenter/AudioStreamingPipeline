@@ -1,350 +1,137 @@
-"""
-Audio capture component for the pipeline.
-"""
-
-import asyncio
-import numpy as np
-import time
-from typing import AsyncGenerator, Dict, Optional, Any
-import wave
 import os
-from datetime import datetime
-from pydantic import BaseModel
-from loguru import logger
+import time
+import numpy as np
+from typing import Dict, Any
+import asyncio
 
-from src.core.component import Component, ComponentConfig
+# Try to import logger, fallback to standard logging
+try:
+    from loguru import logger
+except ImportError:
+    import logging
+    logger = logging.getLogger("audio_capture")
 
-class AudioCaptureConfig(ComponentConfig):
-    """Configuration for the AudioCapture component"""
-    rate: int = 16000
-    frames_per_buffer: int = 1024
-    channels: int = 1
-    format: int = 8  # 16-bit audio (pyaudio.paInt16)
-    device_index: Optional[int] = None
-    use_mock: bool = False
-    export_audio: bool = False
-    output_dir: str = "output/audio"
-
-class AudioCapture(Component):
-    """Component for capturing audio from microphone"""
-
-    def __init__(self, config: AudioCaptureConfig):
-        """Initialize the audio capture component"""
-        super().__init__(config)
-        self.config = config
+class AudioCapture:
+    def __init__(self, config=None, performance_tracker=None):
+        self.name = "AudioCapture"
+        self.performance_tracker = performance_tracker
+        self.rate = config.get("rate", 16000) if config else 16000
+        self.frames_per_buffer = config.get("frames_per_buffer", 1024) if config else 1024
+        self.channels = config.get("channels", 1) if config else 1
+        self.format = config.get("format", 8) if config else 8  # 16-bit audio
+        self.device_index = config.get("device_index") if config else None
+        self.export_audio = config.get("export_audio", True) if config else True
+        self.output_dir = config.get("output_dir", "output/audio") if config else "output/audio"
+        self.is_running = False
         self.stream = None
-        self.is_running = False
-        self.audio_buffer = []
-        self.pa = None  # PyAudio instance
+        self.pyaudio_instance = None
 
-        # Create output directory if exporting audio
-        if self.config.export_audio:
-            os.makedirs(self.config.output_dir, exist_ok=True)
+        # Create output directory
+        os.makedirs(self.output_dir, exist_ok=True)
 
-    async def initialize(self) -> None:
-        """Initialize the audio capture component"""
-        logger.info("Initializing AudioCapture component...")
+        logger.info(f"Initializing {self.name}")
 
-        # Initialize PyAudio if not using mock audio
-        if not self.config.use_mock:
-            try:
-                import pyaudio
-                self.pa = pyaudio.PyAudio()
-
-                # Get the format value from PyAudio
-                self.format_value = getattr(pyaudio, f"paInt{self.config.format * 2}")
-
-                # List available audio devices to help with debugging
-                logger.info("Available audio input devices:")
-                for i in range(self.pa.get_device_count()):
-                    dev_info = self.pa.get_device_info_by_index(i)
-                    if dev_info.get('maxInputChannels') > 0:  # Only show input devices
-                        logger.info(f"  Device {i}: {dev_info.get('name')}")
-
-                # If device_index is None, try to find the default input device
-                if self.config.device_index is None:
-                    default_input = self.pa.get_default_input_device_info()
-                    self.config.device_index = default_input.get('index')
-                    logger.info(f"Using default input device: {default_input.get('name')} (index: {self.config.device_index})")
-
-            except ImportError:
-                logger.warning("PyAudio not installed. Falling back to mock audio.")
-                self.config.use_mock = True
-            except Exception as e:
-                logger.error(f"Error initializing PyAudio: {str(e)}")
-                logger.warning("Falling back to mock audio.")
-                self.config.use_mock = True
-
-    async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """Process audio data"""
-        # This method is not used for audio capture as it uses a generator
-        return data
-
-    async def shutdown(self) -> None:
-        """Shutdown the audio capture component"""
-        logger.info("Shutting down AudioCapture component...")
-        self.is_running = False
-
-        # Close PyAudio stream if open
-        if hasattr(self, 'stream') and self.stream is not None:
-            try:
-                self.stream.stop_stream()
-                self.stream.close()
-            except Exception as e:
-                logger.error(f"Error closing audio stream: {str(e)}")
-
-        # Terminate PyAudio if initialized
-        if self.pa is not None:
-            try:
-                self.pa.terminate()
-            except Exception as e:
-                logger.error(f"Error terminating PyAudio: {str(e)}")
-
-    async def audio_generator(self) -> AsyncGenerator[np.ndarray, None]:
-        """Generate audio chunks from microphone"""
-        if self.config.use_mock:
-            # Generate mock audio for testing
-            logger.info("Using mock audio generator")
-            for _ in range(10):
-                # Generate 1 second of mock audio (sine wave)
-                t = np.linspace(0, 1, self.config.rate)
-                audio_data = np.sin(2 * np.pi * 440 * t).astype(np.float32)
-
-                # Reshape for stereo if needed
-                if self.config.channels == 2:
-                    audio_data = np.column_stack((audio_data, audio_data))
-
-                # Export audio if enabled
-                if self.config.export_audio:
-                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
-                    filename = f"{self.config.output_dir}/mock_audio_{timestamp}.npy"
-                    np.save(filename, audio_data)
-
-                yield audio_data
-                await asyncio.sleep(1)
-            return
-
-        logger.info("Starting audio capture with PyAudio...")
-        self.is_running = True
-
+    async def initialize(self):
         try:
             import pyaudio
+            self.pyaudio_instance = pyaudio.PyAudio()
+            logger.info(f"{self.name} initialized successfully")
+            return True
+        except ImportError:
+            logger.error("PyAudio not installed. Please install it with 'pip install pyaudio'")
+            return False
+        except Exception as e:
+            logger.error(f"Error initializing {self.name}: {str(e)}")
+            return False
 
-            # Open audio stream
-            self.stream = self.pa.open(
-                format=self.format_value,
-                channels=self.config.channels,
-                rate=self.config.rate,
+    async def capture_audio(self, duration):
+        """Capture audio for the specified duration"""
+        if self.performance_tracker:
+            self.performance_tracker.start_component("AudioCapture_recording")
+
+        logger.info(f"Capturing audio for {duration} seconds...")
+
+        try:
+            # Use PyAudio directly for more reliable audio capture
+            import pyaudio
+
+            if not self.pyaudio_instance:
+                self.pyaudio_instance = pyaudio.PyAudio()
+
+            stream = self.pyaudio_instance.open(
+                format=pyaudio.paInt16,
+                channels=1,
+                rate=16000,
                 input=True,
-                frames_per_buffer=self.config.frames_per_buffer,
-                input_device_index=self.config.device_index
+                frames_per_buffer=1024
             )
 
-            logger.info("Audio stream opened")
-            logger.info(f"Capturing audio at {self.config.rate} Hz, {self.config.channels} channel(s)")
+            # Calculate how many frames to read
+            frames_to_read = int(16000 * duration / 1024)
 
-            # Read audio chunks
-            while self.is_running:
-                try:
-                    # Read audio data
-                    audio_bytes = self.stream.read(self.config.frames_per_buffer, exception_on_overflow=False)
+            # Read audio data
+            frames = []
+            for i in range(frames_to_read):
+                data = stream.read(1024, exception_on_overflow=False)
+                frames.append(data)
 
-                    # Convert to numpy array
-                    audio_data = np.frombuffer(audio_bytes, dtype=np.int16).astype(np.float32) / 32768.0
+            # Close the stream
+            stream.stop_stream()
+            stream.close()
 
-                    # Reshape for stereo if needed
-                    if self.config.channels == 2:
-                        audio_data = audio_data.reshape(-1, 2)
+            # Convert to numpy array
+            audio_data = np.frombuffer(b''.join(frames), dtype=np.int16).astype(np.float32) / 32768.0
 
-                    # Export audio if enabled
-                    if self.config.export_audio:
-                        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+            # Save the audio file for debugging
+            if self.export_audio:
+                import wave
+                filename = os.path.join(self.output_dir, f"recording_{int(time.time())}.wav")
+                with wave.open(filename, 'wb') as wf:
+                    wf.setnchannels(1)
+                    wf.setsampwidth(2)  # 2 bytes for 16-bit audio
+                    wf.setframerate(16000)
+                    wf.writeframes(b''.join(frames))
+                logger.info(f"Saved audio to {filename}")
 
-                        # Save as WAV file
-                        filename = f"{self.config.output_dir}/audio_{timestamp}.wav"
-                        with wave.open(filename, 'wb') as wf:
-                            wf.setnchannels(self.config.channels)
-                            wf.setsampwidth(2)  # 16-bit audio
-                            wf.setframerate(self.config.rate)
-                            # Convert back to int16 for WAV file
-                            int16_data = (audio_data * 32768.0).astype(np.int16)
-                            wf.writeframes(int16_data.tobytes())
+            if self.performance_tracker:
+                elapsed = self.performance_tracker.end_component("AudioCapture_recording")
+                logger.info(f"Audio recording time: {elapsed:.3f}s")
 
-                        # Also save as numpy array for easier processing
-                        np_filename = f"{self.config.output_dir}/audio_{timestamp}.npy"
-                        np.save(np_filename, audio_data)
-
-                    yield audio_data
-
-                    # Small delay to prevent CPU overload
-                    await asyncio.sleep(0.001)
-
-                except Exception as e:
-                    logger.error(f"Error reading audio: {str(e)}")
-                    await asyncio.sleep(0.1)  # Wait a bit before trying again
-
-            # Close stream
-            self.stream.stop_stream()
-            self.stream.close()
-            logger.info("Audio stream closed")
+            return audio_data
 
         except Exception as e:
-            logger.error(f"Error in audio capture: {str(e)}")
-            # Fall back to mock audio
-            logger.info("Falling back to mock audio")
-            async for audio_data in self._mock_audio_generator():
-                yield audio_data
+            logger.error(f"Error capturing audio: {str(e)}")
+            import traceback
+            logger.error(traceback.format_exc())
 
-        finally:
-            self.is_running = False
-            logger.info("Audio capture stopped")
+            if self.performance_tracker:
+                self.performance_tracker.end_component("AudioCapture_recording")
 
-    async def _mock_audio_generator(self) -> AsyncGenerator[np.ndarray, None]:
-        """Generate mock audio data"""
-        while self.is_running:
-            # Generate 1 second of mock audio (sine wave)
-            t = np.linspace(0, 1, self.config.rate)
-            audio_data = np.sin(2 * np.pi * 440 * t).astype(np.float32)
+            # Return empty array on error
+            return np.array([], dtype=np.float32)
 
-            # Reshape for stereo if needed
-            if self.config.channels == 2:
-                audio_data = np.column_stack((audio_data, audio_data))
+    async def process(self, data):
+        """Process input data (not used for AudioCapture)"""
+        if self.performance_tracker:
+            self.performance_tracker.start_component("AudioCapture")
 
-            # Export audio if enabled
-            if self.config.export_audio:
-                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
-                filename = f"{self.config.output_dir}/mock_audio_{timestamp}.npy"
-                np.save(filename, audio_data)
+        # AudioCapture doesn't process input data
+        result = data
 
-            yield audio_data
-            await asyncio.sleep(0.1)  # Simulate processing time
+        if self.performance_tracker:
+            elapsed = self.performance_tracker.end_component("AudioCapture")
+            logger.info(f"AudioCapture processing time: {elapsed:.3f}s")
 
+        return result
 
-# """
-# Audio capture component for the pipeline.
-# """
+    async def shutdown(self):
+        """Shutdown the audio capture component"""
+        if self.stream:
+            self.stream.stop_stream()
+            self.stream.close()
 
-# import asyncio
-# import numpy as np
-# import time
-# from typing import AsyncGenerator, Dict, Optional, Any
-# import wave
-# import os
-# from datetime import datetime
-# from pydantic import BaseModel
-# import sounddevice as sd
-# from loguru import logger
+        if self.pyaudio_instance:
+            self.pyaudio_instance.terminate()
 
-# from src.core.component import Component, ComponentConfig
-
-# class AudioCaptureConfig(ComponentConfig):
-#     """Configuration for the AudioCapture component"""
-#     rate: int = 16000
-#     frames_per_buffer: int = 1024
-#     channels: int = 1
-#     format: int = 8  # 16-bit audio (pyaudio.paInt16)
-#     device_index: Optional[int] = None
-#     use_mock: bool = False
-#     export_audio: bool = False
-
-# class AudioCapture(Component):
-#     """Component for capturing audio from microphone"""
-
-#     def __init__(self, config: AudioCaptureConfig):
-#         """Initialize the audio capture component"""
-#         super().__init__(config)
-#         self.config = config
-#         self.stream = None
-#         self.is_running = False
-#         self.audio_buffer = []
-
-#     async def initialize(self) -> None:
-#         """Initialize the audio capture component"""
-#         logger.info("Initializing AudioCapture component...")
-
-#         # Create output directory if exporting audio
-#         if self.config.export_audio:
-#             os.makedirs("output/audio", exist_ok=True)
-
-#     async def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
-#         """Process audio data"""
-#         # This method is not used for audio capture as it uses a generator
-#         return data
-
-#     async def shutdown(self) -> None:
-#         """Shutdown the audio capture component"""
-#         logger.info("Shutting down AudioCapture component...")
-#         self.is_running = False
-
-#         if self.stream is not None:
-#             self.stream.stop()
-#             self.stream.close()
-#             self.stream = None
-
-#     def audio_callback(self, indata, frames, time_info, status):
-#         """Callback function for audio stream"""
-#         if status:
-#             logger.warning(f"Audio status: {status}")
-
-#         # Add audio data to buffer
-#         self.audio_buffer.append(indata.copy())
-
-#     async def audio_generator(self) -> AsyncGenerator[np.ndarray, None]:
-#         """Generate audio chunks from microphone"""
-#         if self.config.use_mock:
-#             # Generate mock audio for testing
-#             logger.info("Using mock audio generator")
-#             for _ in range(10):
-#                 # Generate 1 second of silence
-#                 yield np.zeros((self.config.rate, self.config.channels), dtype=np.int16)
-#                 await asyncio.sleep(1)
-#             return
-
-#         logger.info("Starting audio capture...")
-#         self.is_running = True
-#         self.audio_buffer = []
-
-#         # Start audio stream
-#         self.stream = sd.InputStream(
-#             samplerate=self.config.rate,
-#             channels=self.config.channels,
-#             callback=self.audio_callback,
-#             blocksize=self.config.frames_per_buffer
-#         )
-#         self.stream.start()
-
-#         # Generate audio chunks
-#         try:
-#             start_time = time.time()
-
-#             while self.is_running:
-#                 # Wait for audio data
-#                 if len(self.audio_buffer) > 0:
-#                     # Get audio data from buffer
-#                     audio_data = self.audio_buffer.pop(0)
-
-#                     # Export audio if enabled
-#                     if self.config.export_audio:
-#                         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
-#                         filename = f"output/audio/chunk_{timestamp}.wav"
-#                         with wave.open(filename, 'wb') as wf:
-#                             wf.setnchannels(self.config.channels)
-#                             wf.setsampwidth(2)  # 16-bit audio
-#                             wf.setframerate(self.config.rate)
-#                             wf.writeframes(audio_data.tobytes())
-
-#                     # Yield audio data
-#                     yield audio_data
-#                 else:
-#                     # Wait for more audio data
-#                     await asyncio.sleep(0.01)
-
-#         finally:
-#             # Stop audio stream
-#             if self.stream is not None:
-#                 self.stream.stop()
-#                 self.stream.close()
-#                 self.stream = None
-
-#             self.is_running = False
-#             logger.info("Audio capture stopped")
+        logger.info(f"{self.name} shutdown successfully")
+        return True
