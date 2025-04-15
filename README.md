@@ -37,7 +37,7 @@ The pipeline uses a modular, event-driven architecture where each component:
 # Test suite and testing methodology on local system with less resources
 
 # for general test of the flow 
-1. After the necessary installations specified in requirements_lightweight.txt for running on local env, run the file examples/simple_pipeline_test.py
+1. After the necessary installations specified in requirements_lightweight.txt for running on local env, run the file examples/conversational_pipeline.py
 
 # for testing the APIs
 1. Run the server.py in api/server.py
