@@ -37,6 +37,7 @@ The pipeline uses a modular, event-driven architecture where each component:
 # Test suite and testing methodology on local system with less resources
 
 # for general test of the flow 
+**Note :Tested on python version 3.12.0**
 1. After the necessary installations specified in requirements_lightweight.txt for running on local env, run the file examples/conversational_pipeline.py
 
 # for testing the APIs
