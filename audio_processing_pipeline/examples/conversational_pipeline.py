@@ -408,7 +408,11 @@ async def run_conversational_pipeline():
         print("=" * 50 + "\n")
 
         # Run the conversation loop
+        continue_conversation = True
         for turn in range(1, 11):  # 10 turns max
+            if not continue_conversation:
+                break
+
             try:
                 # Play a sound to indicate the system is ready to listen
                 await play_prompt_sound("start")
@@ -453,13 +457,13 @@ async def run_conversational_pipeline():
                 # Ask if the user wants to continue
                 print("Continue? (y/n): ", end="", flush=True)
 
-                # Wait for user input with a timeout
-                user_input = await asyncio.wait_for(
-                    asyncio.to_thread(input),
-                    timeout=10
-                )
+                # Get user input synchronously to avoid issues
+                user_input = input().strip().lower()
 
-                if user_input.lower() != "y":
+                # Check if user wants to continue
+                if user_input != "y":
+                    continue_conversation = False
+                    print("\nEnding conversation as requested.")
                     break
 
             except asyncio.TimeoutError:
@@ -497,6 +501,10 @@ async def run_conversational_pipeline():
         # Force garbage collection
         gc.collect()
 
+        # Explicitly exit the program
+        print("Shutting down...")
+        sys.exit(0)
+
 if __name__ == "__main__":
     # Set environment variables for better performance
     os.environ["OMP_NUM_THREADS"] = "1"
@@ -511,7 +519,6 @@ if __name__ == "__main__":
     # Make sure components directory exists
     os.makedirs("components", exist_ok=True)
 
-   
     print("=" * 50 + "\n")
 
     # Import time here to avoid circular import
